@@ -52,7 +52,7 @@ export async function authenticateWithGithub(app: FastifyInstance) {
       const { access_token: githubAccessToken } = z
         .object({
           access_token: z.string(),
-          tokenType: z.literal('bearer'),
+          token_type: z.literal('bearer'),
           scope: z.string(),
         })
         .parse(githubAccessTokenData)
@@ -67,9 +67,9 @@ export async function authenticateWithGithub(app: FastifyInstance) {
 
       const {
         id: githubId,
-        avatar_url: avatarUrl,
         name,
         email,
+        avatar_url: avatarUrl,
       } = z
         .object({
           id: z.number().int().transform(String),
@@ -81,7 +81,7 @@ export async function authenticateWithGithub(app: FastifyInstance) {
 
       if (email === null) {
         throw new BadRequestError(
-          'Your github accountmust have an email to authenticate.',
+          'Your GitHub account must have an email to authenticate.',
         )
       }
 
@@ -92,8 +92,8 @@ export async function authenticateWithGithub(app: FastifyInstance) {
       if (!user) {
         user = await prisma.user.create({
           data: {
-            name,
             email,
+            name,
             avatarUrl,
           },
         })
@@ -133,7 +133,4 @@ export async function authenticateWithGithub(app: FastifyInstance) {
     },
   )
 }
-
 // https://github.com/login/oauth/authorize?client_id=Ov23lixLqKCzFTAIMhch&redirect_uri=http://localhost:3000/api/auth/callback&scope=user:email
-
-// 06:35
